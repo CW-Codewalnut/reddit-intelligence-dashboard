@@ -18,7 +18,7 @@ export function Sidebar() {
     return [
       { name: "Dashboard", href: `/${clientName}/`, icon: LayoutDashboard },
       // { name: "Clients", href: `/${userId}/clients`, icon: Users },
-      { name: "Keywords", href: `/${clientName}/keywords`, icon: Hash },
+      { name: "Keywords Alerts", href: `/${clientName}/keywords`, icon: Hash },
       { name: "Alerts", href: `/${clientName}/alerts`, icon: Bell },
     ];
   }, [params.id]);

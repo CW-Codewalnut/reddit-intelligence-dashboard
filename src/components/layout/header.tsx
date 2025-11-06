@@ -17,7 +17,7 @@ export function Header() {
   const navigation = useMemo(
     () => [
       { name: "Dashboard", href: `/${clientName}`, icon: LayoutDashboard },
-      { name: "Keywords", href: `/${clientName}/keywords`, icon: Hash },
+      { name: "Keywords Alerts", href: `/${clientName}/keywords`, icon: Hash },
       { name: "Alerts", href: `/${clientName}/alerts`, icon: Bell },
     ],
     [clientName]
