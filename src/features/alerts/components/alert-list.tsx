@@ -88,9 +88,6 @@ export function AlertList() {
       <Card className="border-lw-purple/20">
         <CardHeader>
           <CardTitle>All Alerts</CardTitle>
-          {/* <CardDescription>
-            {alerts.length} alert{alerts.length !== 1 ? "s" : ""} sent
-          </CardDescription> */}
         </CardHeader>
         <CardContent>
           {alerts.length === 0 ? (
@@ -104,8 +101,7 @@ export function AlertList() {
                   <TableHead>Sent At</TableHead>
                   <TableHead>Keyword</TableHead>
                   <TableHead>Reddit Thread Title</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Reddit Thread URL</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -128,16 +124,7 @@ export function AlertList() {
                     <TableCell>
                       <div className="max-w-md truncate">{alert.content || "No content"}</div>
                     </TableCell>
-                    <TableCell>
-                      {alert.email_sent_to ? (
-                        <div className="flex items-center gap-2">
-                          <Mail className="text-muted-foreground h-4 w-4" />
-                          <span className="text-sm">{alert.email_sent_to}</span>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Not sent</span>
-                      )}
-                    </TableCell>
+
                     <TableCell>
                       {alert.url && (
                         <Button variant="ghost" size="icon" asChild>

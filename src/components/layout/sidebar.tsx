@@ -17,7 +17,7 @@ export function Sidebar() {
   const navigation = useMemo(() => {
     return [
       { name: "Dashboard", href: `/${clientName}/`, icon: LayoutDashboard },
-      // { name: "Clients", href: `/${userId}/clients`, icon: Users }, // Commented out - not needed
+      // { name: "Clients", href: `/${userId}/clients`, icon: Users },
       { name: "Keywords", href: `/${clientName}/keywords`, icon: Hash },
       { name: "Alerts", href: `/${clientName}/alerts`, icon: Bell },
     ];
