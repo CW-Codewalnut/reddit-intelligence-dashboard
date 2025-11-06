@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLink, Mail, Hash } from "lucide-react";
+import { ExternalLink, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Pagination,
