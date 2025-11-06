@@ -1,1 +1,237 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* === LEAD WALNUT COLOR PALETTE === */
+
+  /* 🌿 Primary */
+  --lw-primary-dim: #284405;
+  --lw-primary-darker: #35580f;
+  --lw-primary-dark: #5a6c0c;
+  --lw-primary-default: #78c317;
+  --lw-primary-light: #a6e851;
+  --lw-primary-lighter: #cbf194;
+  --lw-primary-pale: #e6f5d2;
+
+  /* 💎 Accent */
+  --lw-accent-dim: #08392a;
+  --lw-accent-darker: #25483f;
+  --lw-accent-dark: #32735f;
+  --lw-accent-default: #2de07f;
+  --lw-accent-light: #60e89e;
+  --lw-accent-lighter: #91eaba;
+  --lw-accent-pale: #caf0dc;
+
+  /* ⚪ Neutral */
+  --lw-neutral-charcoal: #0f243d;
+  --lw-neutral-shadow: #395162;
+  --lw-neutral-lava: #5a6f7d;
+  --lw-neutral-slate: #899aa6;
+  --lw-neutral-cloud: #b8c6cf;
+  --lw-neutral-pearl: #dce5ec;
+  --lw-neutral-marble: #ffffff;
+
+  /* 💜 Purple */
+  --lw-purple-dim: #3d0a49;
+  --lw-purple-darker: #6a0e80;
+  --lw-purple-dark: #9016be;
+  --lw-purple-default: #bc62ed;
+  --lw-purple-light: #ce66e9;
+  --lw-purple-lighter: #dfa7ed;
+  --lw-purple-pale: #e6d6f1;
+
+  /* ❤️ Crimson */
+  --lw-crimson-dim: #640c10;
+  --lw-crimson-darker: #891027;
+  --lw-crimson-dark: #bb1333;
+  --lw-crimson-default: #dd1538;
+  --lw-crimson-light: #ed4363;
+  --lw-crimson-lighter: #f2289c;
+  --lw-crimson-pale: #fdd4d9;
+
+  /* 🟡 Amber */
+  --lw-amber-dim: #654d08;
+  --lw-amber-darker: #9e7a0f;
+  --lw-amber-dark: #ce9c0a;
+  --lw-amber-default: #f7be0d;
+  --lw-amber-light: #ffd65f;
+  --lw-amber-lighter: #ffe599;
+  --lw-amber-pale: #fff0c4;
+
+  /* 🌈 Gradient */
+  --lw-gradient-primary: linear-gradient(90deg, #78c317, #32735f);
+
+  /* === MAPPED TO TAILWIND/SHADCN VARIABLES === */
+  --background: var(--lw-neutral-marble);
+  --foreground: var(--lw-neutral-charcoal);
+  --card: var(--lw-neutral-marble);
+  --card-foreground: var(--lw-neutral-charcoal);
+  --popover: var(--lw-neutral-marble);
+  --popover-foreground: var(--lw-neutral-charcoal);
+  --primary: var(--lw-primary-default);
+  --primary-foreground: var(--lw-neutral-marble);
+  --secondary: var(--lw-accent-default);
+  --secondary-foreground: var(--lw-neutral-marble);
+  --muted: var(--lw-neutral-pearl);
+  --muted-foreground: var(--lw-neutral-lava);
+  --accent: var(--lw-accent-light);
+  --accent-foreground: var(--lw-neutral-charcoal);
+  --destructive: var(--lw-crimson-default);
+  --destructive-foreground: var(--lw-neutral-marble);
+  --border: var(--lw-neutral-cloud);
+  --input: var(--lw-neutral-cloud);
+  --ring: var(--lw-primary-default);
+  --chart-1: var(--lw-primary-default);
+  --chart-2: var(--lw-accent-default);
+  --chart-3: var(--lw-purple-default);
+  --chart-4: var(--lw-amber-default);
+  --chart-5: var(--lw-crimson-default);
+  --radius: 0.5rem;
+  --sidebar: var(--lw-neutral-pearl);
+  --sidebar-foreground: var(--lw-neutral-charcoal);
+  --sidebar-primary: var(--lw-primary-default);
+  --sidebar-primary-foreground: var(--lw-neutral-marble);
+  --sidebar-accent: var(--lw-neutral-cloud);
+  --sidebar-accent-foreground: var(--lw-neutral-charcoal);
+  --sidebar-border: var(--lw-neutral-cloud);
+  --sidebar-ring: var(--lw-primary-default);
+}
+
+.dark {
+  /* Override core Lead Walnut tones for dark mode for better contrast */
+  --lw-primary-default: #a6e851;
+  --lw-primary-dark: #78c317;
+  --lw-accent-default: #60e89e;
+  --lw-accent-dark: #2de07f;
+  --lw-neutral-charcoal: #e6e8ea;
+  --lw-neutral-shadow: #b8c6cf;
+  --lw-neutral-marble: #0f243d;
+  --lw-neutral-pearl: #1a3346;
+  --lw-neutral-cloud: #395162;
+
+  /* === MAPPED DARK MODE VARIABLES === */
+  --background: var(--lw-neutral-marble);
+  --foreground: var(--lw-neutral-charcoal);
+  --card: #1a3346;
+  --card-foreground: var(--lw-neutral-charcoal);
+  --popover: #1a3346;
+  --popover-foreground: var(--lw-neutral-charcoal);
+  --primary: var(--lw-primary-default);
+  --primary-foreground: var(--lw-neutral-charcoal);
+  --secondary: var(--lw-accent-default);
+  --secondary-foreground: var(--lw-neutral-charcoal);
+  --muted: var(--lw-neutral-cloud);
+  --muted-foreground: var(--lw-neutral-shadow);
+  --accent: var(--lw-accent-light);
+  --accent-foreground: var(--lw-neutral-charcoal);
+  --destructive: #ed4363;
+  --destructive-foreground: var(--lw-neutral-charcoal);
+  --border: var(--lw-neutral-cloud);
+  --input: var(--lw-neutral-cloud);
+  --ring: var(--lw-primary-default);
+  --sidebar: #1a3346;
+  --sidebar-foreground: var(--lw-neutral-charcoal);
+  --sidebar-primary: var(--lw-primary-default);
+  --sidebar-primary-foreground: var(--lw-neutral-charcoal);
+  --sidebar-accent: var(--lw-neutral-cloud);
+  --sidebar-accent-foreground: var(--lw-neutral-charcoal);
+  --sidebar-border: var(--lw-neutral-cloud);
+  --sidebar-ring: var(--lw-primary-default);
+}
+
+@theme inline {
+  /* === Standard Tailwind/shadcn colors === */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* === Lead Walnut Palette - Direct Access === */
+  --color-lw-primary-dim: var(--lw-primary-dim);
+  --color-lw-primary-darker: var(--lw-primary-darker);
+  --color-lw-primary-dark: var(--lw-primary-dark);
+  --color-lw-primary: var(--lw-primary-default);
+  --color-lw-primary-light: var(--lw-primary-light);
+  --color-lw-primary-lighter: var(--lw-primary-lighter);
+  --color-lw-primary-pale: var(--lw-primary-pale);
+
+  --color-lw-accent-dim: var(--lw-accent-dim);
+  --color-lw-accent-darker: var(--lw-accent-darker);
+  --color-lw-accent-dark: var(--lw-accent-dark);
+  --color-lw-accent: var(--lw-accent-default);
+  --color-lw-accent-light: var(--lw-accent-light);
+  --color-lw-accent-lighter: var(--lw-accent-lighter);
+  --color-lw-accent-pale: var(--lw-accent-pale);
+
+  --color-lw-neutral-charcoal: var(--lw-neutral-charcoal);
+  --color-lw-neutral-shadow: var(--lw-neutral-shadow);
+  --color-lw-neutral-lava: var(--lw-neutral-lava);
+  --color-lw-neutral-slate: var(--lw-neutral-slate);
+  --color-lw-neutral-cloud: var(--lw-neutral-cloud);
+  --color-lw-neutral-pearl: var(--lw-neutral-pearl);
+  --color-lw-neutral-marble: var(--lw-neutral-marble);
+
+  --color-lw-purple-dim: var(--lw-purple-dim);
+  --color-lw-purple-darker: var(--lw-purple-darker);
+  --color-lw-purple-dark: var(--lw-purple-dark);
+  --color-lw-purple: var(--lw-purple-default);
+  --color-lw-purple-light: var(--lw-purple-light);
+  --color-lw-purple-lighter: var(--lw-purple-lighter);
+  --color-lw-purple-pale: var(--lw-purple-pale);
+
+  --color-lw-crimson-dim: var(--lw-crimson-dim);
+  --color-lw-crimson-darker: var(--lw-crimson-darker);
+  --color-lw-crimson-dark: var(--lw-crimson-dark);
+  --color-lw-crimson: var(--lw-crimson-default);
+  --color-lw-crimson-light: var(--lw-crimson-light);
+  --color-lw-crimson-lighter: var(--lw-crimson-lighter);
+  --color-lw-crimson-pale: var(--lw-crimson-pale);
+
+  --color-lw-amber-dim: var(--lw-amber-dim);
+  --color-lw-amber-darker: var(--lw-amber-darker);
+  --color-lw-amber-dark: var(--lw-amber-dark);
+  --color-lw-amber: var(--lw-amber-default);
+  --color-lw-amber-light: var(--lw-amber-light);
+  --color-lw-amber-lighter: var(--lw-amber-lighter);
+  --color-lw-amber-pale: var(--lw-amber-pale);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
