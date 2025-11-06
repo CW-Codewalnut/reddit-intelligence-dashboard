@@ -1,5 +1,5 @@
 import { Link, useLocation, useParams } from "react-router-dom";
-import { LayoutDashboard, Hash, Bell, FileText, X, Menu, Users } from "lucide-react";
+import { LayoutDashboard, Hash, Bell, X, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "@/contexts/sidebar-context";
 import { useMobile } from "@/hooks/use-mobile";

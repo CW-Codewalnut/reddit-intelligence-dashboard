@@ -1,25 +1,27 @@
-import { Link, useLocation } from "react-router-dom";
-import { Menu, LayoutDashboard, Hash, Bell, FileText } from "lucide-react";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { Menu, LayoutDashboard, Hash, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { useMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useState } from "react";
-
-const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  // { name: "Clients", href: "/clients", icon: Users }, // Commented out - not needed
-  { name: "Keywords", href: "/keywords", icon: Hash },
-  { name: "Alerts", href: "/alerts", icon: Bell },
-  // { name: "Posts", href: "/posts", icon: FileText },
-  // { name: "Comments", href: "/comments", icon: MessageSquare }, // Commented out - not needed
-];
+import { useState, useMemo } from "react";
 
 export function Header() {
   const location = useLocation();
   const isMobile = useMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const params = useParams();
+  const clientName = params.id;
+
+  const navigation = useMemo(
+    () => [
+      { name: "Dashboard", href: `/${clientName}`, icon: LayoutDashboard },
+      { name: "Keywords", href: `/${clientName}/keywords`, icon: Hash },
+      { name: "Alerts", href: `/${clientName}/alerts`, icon: Bell },
+    ],
+    [clientName]
+  );
 
   return (
     <header className="bg-background/95 border-lw-neutral-cloud supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 flex h-20 items-center gap-4 border-b px-4 shadow-sm backdrop-blur md:px-6">
