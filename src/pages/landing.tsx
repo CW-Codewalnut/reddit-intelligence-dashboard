@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import {
   Search,
@@ -243,7 +243,7 @@ export function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-4 py-16">
+      {/* <section className="container mx-auto px-4 py-16">
         <Card className="from-lw-primary to-lw-accent mx-auto max-w-4xl border-0 bg-gradient-to-r text-white">
           <CardHeader className="pb-4 text-center">
             <CardTitle className="mb-2 text-3xl">Ready to Get Started?</CardTitle>
@@ -273,7 +273,7 @@ export function Landing() {
             </p>
           </CardContent>
         </Card>
-      </section>
+      </section> */}
 
       {/* Footer */}
       <footer className="mt-16 border-t">
