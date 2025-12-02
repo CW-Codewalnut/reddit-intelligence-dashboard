@@ -21,22 +21,21 @@ export function KeywordList() {
   const [clientId, setClientId] = useState<number | null>(null);
 
   const loadKeywords = async () => {
+    if (!clientName) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      if (!clientName) return;
-
-      // Resolve client ID if not already set
-      let currentClientId = clientId;
-      if (!currentClientId) {
-        const clients = await getClients();
-        const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
-        if (client) {
-          currentClientId = client.id;
-          setClientId(client.id);
-        }
+      const clients = await getClients();
+      const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
+      if (client) {
+        setClientId(client.id);
+        const data = await getKeywords(clientName);
+        setAllKeywords(data);
       }
-
-      const data = await getKeywords(clientName);
-      setAllKeywords(data);
     } catch (error) {
       console.error("Failed to load keywords:", error);
     } finally {
@@ -46,7 +45,7 @@ export function KeywordList() {
 
   useEffect(() => {
     loadKeywords();
-  }, []);
+  }, [clientName]);
 
   const groupedKeywords = useMemo(() => {
     const groups = new Map<string, KeywordWithClient[]>();
@@ -101,7 +100,7 @@ export function KeywordList() {
   return (
     <div className="space-y-4">
       <div className="relative">
-        <div className="from-lw-amber/10 to-lw-primary/10 absolute inset-0 -z-10 rounded-xl bg-gradient-to-r"></div>
+        <div className="from-lw-amber/10 to-lw-primary/10 absolute inset-0 -z-10 rounded-xl bg-linear-to-r"></div>
         <div className="px-6 py-6">
           <h1 className="text-3xl font-bold tracking-tight">Keywords Alerts</h1>
           <p className="text-muted-foreground">Manage keywords Alerts to monitor on Reddit</p>
@@ -114,7 +113,11 @@ export function KeywordList() {
             <div className="flex items-center gap-4">
               <CardTitle>All Keywords Alerts</CardTitle>
             </div>
-            <Button variant="gradient" className="cursor-pointer" onClick={() => setDialogOpen(true)}>
+            <Button
+              variant="gradient"
+              className="cursor-pointer"
+              onClick={() => setDialogOpen(true)}
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add Keyword
             </Button>
@@ -170,7 +173,12 @@ export function KeywordList() {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" className="cursor-pointer" onClick={() => handleEdit(keyword)}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="cursor-pointer"
+                              onClick={() => handleEdit(keyword)}
+                            >
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button

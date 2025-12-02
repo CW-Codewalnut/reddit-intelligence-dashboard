@@ -25,14 +25,19 @@ export function AlertList() {
   const params = useParams();
   const clientName = params.id;
   const loadAlerts = async () => {
+    if (!clientName) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      if (clientName) {
-        const clients = await getClients();
-        const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
-        if (client) {
-          const data = await getAllAlerts({ client_id: client.id });
-          setAllAlerts(data);
-        }
+      const clients = await getClients();
+      const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
+      if (client) {
+        const data = await getAllAlerts({ client_id: client.id });
+        setAllAlerts(data);
       }
     } catch (error) {
       console.error("Failed to load alerts:", error);
@@ -43,7 +48,7 @@ export function AlertList() {
 
   useEffect(() => {
     loadAlerts();
-  }, []);
+  }, [clientName]);
 
   const totalPages = Math.ceil(allAlerts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;

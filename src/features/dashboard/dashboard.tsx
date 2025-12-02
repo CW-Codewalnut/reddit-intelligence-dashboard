@@ -21,6 +21,12 @@ export function Dashboard() {
 
   useEffect(() => {
     async function loadData() {
+      if (!clientName) {
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+
       try {
         const statsData = await getDashboardStats();
         setStats({
@@ -33,13 +39,11 @@ export function Dashboard() {
       }
 
       try {
-        if (clientName) {
-          const clients = await getClients();
-          const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
-          if (client) {
-            const alertsData = await getAllAlerts({ client_id: client.id });
-            setAlerts(alertsData);
-          }
+        const clients = await getClients();
+        const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
+        if (client) {
+          const alertsData = await getAllAlerts({ client_id: client.id });
+          setAlerts(alertsData);
         }
       } catch (error) {
         console.error("Failed to load alerts:", error);
