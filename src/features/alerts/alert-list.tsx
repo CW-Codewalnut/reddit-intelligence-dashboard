@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
-import { getAllAlerts, getClients } from "@/lib/utils/api";
-import type { Alert } from "@/types/database";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { formatDateTime, formatRelativeTime } from "@/lib/utils/formatters";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
+import { getAllAlerts, getClients } from "@/lib/api";
+import type { Alert } from "@/shared/types/database";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
+import { formatDateTime, formatRelativeTime } from "@/lib/formatters";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { ExternalLink, Hash } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -22,7 +15,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "@/shared/ui/pagination";
 import { useParams } from "react-router-dom";
 export function AlertList() {
   const [allAlerts, setAllAlerts] = useState<Alert[]>([]);

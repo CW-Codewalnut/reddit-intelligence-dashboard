@@ -6,15 +6,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+} from "@/shared/ui/dialog";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Switch } from "@/shared/ui/switch";
 
-import { createKeyword, updateKeyword } from "@/lib/utils/api";
-import type { KeywordWithClient } from "@/types/database";
-
+import { createKeyword, updateKeyword } from "@/lib/api";
+import type { KeywordWithClient } from "@/shared/types/database";
 
 interface KeywordDialogProps {
   open: boolean;
@@ -38,8 +37,6 @@ export function KeywordDialog({
   const [useRegex, setUseRegex] = useState(false);
   const [active, setActive] = useState(true);
   const [loading, setLoading] = useState(false);
-
-
 
   useEffect(() => {
     if (keyword) {
@@ -109,7 +106,6 @@ export function KeywordDialog({
             </DialogDescription>
           </DialogHeader>
           <div className="max-h-[60vh] space-y-4 overflow-y-auto py-4">
-
             <div className="space-y-2">
               <Label htmlFor="keyword">Keyword *</Label>
               <Input

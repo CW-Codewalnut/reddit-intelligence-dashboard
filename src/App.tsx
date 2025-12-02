@@ -1,11 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { MainLayout } from "@/components/layout/main-layout";
-import { Dashboard } from "@/pages/dashboard";
-import { Landing } from "@/pages/landing";
+import { MainLayout } from "@/shared/layout/main-layout";
+import { Dashboard } from "@/features/dashboard/dashboard";
+import { Landing } from "@/features/landingpage/landing";
 import { KeywordList } from "@/features/keywords/keyword-list";
 import { AlertList } from "@/features/alerts/alert-list";
-
-import { SidebarProvider } from "@/contexts/sidebar-context";
 
 export const App = () => {
   return (
@@ -16,9 +14,9 @@ export const App = () => {
         <Route
           path="/:id"
           element={
-            <SidebarProvider>
+            <>
               <MainLayout />
-            </SidebarProvider>
+            </>
           }
         >
           <Route index element={<Dashboard />} />

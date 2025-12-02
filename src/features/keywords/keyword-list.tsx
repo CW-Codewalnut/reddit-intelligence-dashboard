@@ -1,21 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
-import { getKeywords, deleteKeyword, getClients } from "@/lib/utils/api";
-import type { KeywordWithClient } from "@/types/database";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { getKeywords, deleteKeyword, getClients } from "@/lib/api";
+import type { KeywordWithClient } from "@/shared/types/database";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
 import { Plus, Edit, Trash2, Hash } from "lucide-react";
-import { formatDate, formatSubreddit } from "@/lib/utils/formatters";
+import { formatDate, formatSubreddit } from "@/lib/formatters";
 import { KeywordDialog } from "./keyword-dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { useParams } from "react-router-dom";
 
 export function KeywordList() {
