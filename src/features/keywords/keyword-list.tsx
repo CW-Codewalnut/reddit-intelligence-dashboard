@@ -114,7 +114,7 @@ export function KeywordList() {
             <div className="flex items-center gap-4">
               <CardTitle>All Keywords Alerts</CardTitle>
             </div>
-            <Button variant="gradient" onClick={() => setDialogOpen(true)}>
+            <Button variant="gradient" className="cursor-pointer" onClick={() => setDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Keyword
             </Button>
@@ -170,12 +170,13 @@ export function KeywordList() {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(keyword)}>
+                            <Button variant="ghost" size="icon" className="cursor-pointer" onClick={() => handleEdit(keyword)}>
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
+                              className="cursor-pointer"
                               onClick={() => handleDelete(keyword.id)}
                             >
                               <Trash2 className="h-4 w-4" />

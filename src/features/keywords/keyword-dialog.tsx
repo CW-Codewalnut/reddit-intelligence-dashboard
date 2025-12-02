@@ -167,10 +167,15 @@ export function KeywordDialog({
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              className="cursor-pointer"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" className="cursor-pointer" disabled={loading}>
               {loading ? "Saving..." : keyword ? "Update" : "Create"}
             </Button>
           </DialogFooter>
