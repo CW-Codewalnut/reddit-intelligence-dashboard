@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getProcessedPosts } from "@/lib/utils/api";
-import type { ProcessedPost } from "@/types/database";
+import { getAllAlerts, getClients } from "@/lib/utils/api";
+import type { Alert } from "@/types/database";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDateTime, formatRelativeTime } from "@/lib/utils/formatters";
@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLink, User } from "lucide-react";
+import { ExternalLink, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Pagination,
@@ -23,33 +23,39 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
-export function PostList() {
-  const [allPosts, setAllPosts] = useState<ProcessedPost[]>([]);
+import { useParams } from "react-router-dom";
+export function AlertList() {
+  const [allAlerts, setAllAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
-  const loadPosts = async () => {
+  const params = useParams();
+  const clientName = params.id;
+  const loadAlerts = async () => {
     try {
-      const data = await getProcessedPosts(100);
-      setAllPosts(data);
+      if (clientName) {
+        const clients = await getClients();
+        const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
+        if (client) {
+          const data = await getAllAlerts({ client_id: client.id });
+          setAllAlerts(data);
+        }
+      }
     } catch (error) {
-      console.error("Failed to load posts:", error);
+      console.error("Failed to load alerts:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadPosts();
+    loadAlerts();
   }, []);
 
-  // Client-side pagination
-  const totalPages = Math.ceil(allPosts.length / itemsPerPage);
+  const totalPages = Math.ceil(allAlerts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const posts = allPosts.slice(startIndex, endIndex);
+  const alerts = allAlerts.slice(startIndex, endIndex);
 
   if (loading) {
     return (
@@ -74,67 +80,61 @@ export function PostList() {
   return (
     <div className="space-y-4">
       <div className="relative">
-        <div className="from-lw-primary/10 to-lw-amber/10 absolute inset-0 -z-10 rounded-xl bg-gradient-to-r"></div>
+        <div className="from-lw-purple/10 to-lw-crimson/10 absolute inset-0 -z-10 rounded-xl bg-linear-to-r"></div>
         <div className="px-6 py-6">
-          <h1 className="text-3xl font-bold tracking-tight">Processed Posts</h1>
-          <p className="text-muted-foreground">View all Reddit posts that have been processed</p>
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Alerts</h1>
+              <p className="text-muted-foreground">View all alerts sent to clients</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <Card className="border-lw-primary/20">
+      <Card className="border-lw-purple/20">
         <CardHeader>
-          <CardTitle>All Posts</CardTitle>
-          {/* <CardDescription>
-            {posts.length} post{posts.length !== 1 ? "s" : ""} processed
-          </CardDescription> */}
+          <CardTitle>All Alerts</CardTitle>
         </CardHeader>
         <CardContent>
-          {posts.length === 0 ? (
+          {alerts.length === 0 ? (
             <div className="text-muted-foreground py-8 text-center">
-              No posts found. Posts will appear here as they are processed.
+              No alerts found. Alerts will appear here when keywords are matched.
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Author</TableHead>
-                  <TableHead>Subreddit</TableHead>
-                  <TableHead>Processed</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Sent At</TableHead>
+                  <TableHead>Keyword</TableHead>
+                  <TableHead>Reddit Thread Title</TableHead>
+                  <TableHead>Reddit Thread URL</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {posts.map((post) => (
-                  <TableRow key={post.id}>
-                    <TableCell className="max-w-md font-medium">
-                      <div className="truncate">{post.title || "No title"}</div>
-                    </TableCell>
-                    <TableCell>
-                      {post.author ? (
-                        <div className="flex items-center gap-2">
-                          <User className="text-muted-foreground h-4 w-4" />
-                          <span className="text-sm">{post.author}</span>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Unknown</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {post.subreddit && <Badge variant="amber">r/{post.subreddit}</Badge>}
-                    </TableCell>
+                {alerts.map((alert) => (
+                  <TableRow key={alert.id}>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="text-sm">{formatDateTime(post.processed_timestamp)}</span>
+                        <span className="text-sm">{formatDateTime(alert.sent_at)}</span>
                         <span className="text-muted-foreground text-xs">
-                          {formatRelativeTime(post.processed_timestamp)}
+                          {formatRelativeTime(alert.sent_at)}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      {post.url && (
+                      <Badge variant="accent">
+                        <Hash className="mr-1 h-3 w-3" />
+                        {alert.matched_keyword}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="max-w-md truncate">{alert.post_title || "No title"}</div>
+                    </TableCell>
+
+                    <TableCell>
+                      {alert.post_url && (
                         <Button variant="ghost" size="icon" asChild>
-                          <a href={post.url} target="_blank" rel="noopener noreferrer">
+                          <a href={alert.post_url} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-4 w-4" />
                           </a>
                         </Button>
@@ -146,7 +146,7 @@ export function PostList() {
             </Table>
           )}
         </CardContent>
-        {!loading && allPosts.length > itemsPerPage && (
+        {!loading && allAlerts.length > itemsPerPage && (
           <div className="border-t p-4">
             <Pagination>
               <PaginationContent>

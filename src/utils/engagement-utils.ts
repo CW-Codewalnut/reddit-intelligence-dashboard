@@ -1,10 +1,10 @@
-import type { AlertWithRelations } from "@/types/database";
+import type { Alert } from "@/types/database";
 import { format, subDays, subMonths, startOfDay, startOfMonth } from "date-fns";
 
 export type TimePeriod = "week" | "month" | "year";
 
 export function processEngagementData(
-  alerts: AlertWithRelations[],
+  alerts: Alert[],
   period: TimePeriod
 ): { date: string; count: number; fullDate: string }[] {
   const now = new Date();
@@ -34,13 +34,11 @@ export function processEngagementData(
       break;
   }
 
-  // Filter alerts within the time period
   const filteredAlerts = alerts.filter((alert) => {
     const alertDate = new Date(alert.sent_at);
     return alertDate >= startDate && alertDate <= now;
   });
 
-  // Group alerts by date
   const grouped = filteredAlerts.reduce(
     (acc, alert) => {
       const key = groupBy(new Date(alert.sent_at));
@@ -50,11 +48,9 @@ export function processEngagementData(
     {} as Record<string, number>
   );
 
-  // Generate array of dates for the period
   const result: { date: string; count: number; fullDate: string }[] = [];
 
   if (period === "year") {
-    // For year, show 12 months
     for (let i = 11; i >= 0; i--) {
       const date = subMonths(now, i);
       const key = format(startOfMonth(date), "yyyy-MM");
@@ -65,7 +61,6 @@ export function processEngagementData(
       });
     }
   } else {
-    // For week and month, show individual days
     const days = period === "week" ? 7 : 30;
     for (let i = days - 1; i >= 0; i--) {
       const date = subDays(now, i);

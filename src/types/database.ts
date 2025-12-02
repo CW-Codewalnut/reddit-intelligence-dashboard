@@ -2,8 +2,18 @@ export interface Client {
   id: number;
   name: string;
   default_email: string | null;
+  website: string | null;
+  description: string | null;
   active: boolean;
   created_at: string;
+}
+
+export interface DashboardStats {
+  total_clients: number;
+  total_keywords: number;
+  total_subreddits: number;
+  total_alerts_today: number;
+  active_clients: Client[];
 }
 
 export interface Keyword {
@@ -23,9 +33,10 @@ export interface Alert {
   client_id: number;
   keyword_id: number;
   post_id: string;
-  content: string | null;
-  url: string | null;
-  email_sent_to: string | null;
+  post_title: string;
+  post_url: string;
+  subreddit: string;
+  matched_keyword: string;
   sent_at: string;
 }
 
@@ -38,38 +49,6 @@ export interface ClientEmail {
   created_at: string;
 }
 
-export interface ProcessedPost {
-  id: number;
-  post_id: string;
-  title: string | null;
-  author: string | null;
-  url: string | null;
-  subreddit: string | null;
-  created_at: string;
-  processed_timestamp: string;
-}
-
-export interface ProcessedComment {
-  id: number;
-  comment_id: string;
-  post_id: string;
-  body: string | null;
-  author: string | null;
-  created_at: string;
-  processed_timestamp: string;
-}
-
-export interface LastCheck {
-  id: number;
-  subreddit: string;
-  last_check_time: string;
-}
-
 export interface KeywordWithClient extends Keyword {
   client: Client;
-}
-
-export interface AlertWithRelations extends Alert {
-  client: Client;
-  keyword: Keyword;
 }

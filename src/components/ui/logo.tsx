@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -13,11 +14,14 @@ const sizeClasses = {
 };
 
 export function Logo({ className, size = "md" }: LogoProps) {
+  const navigate = useNavigate();
+
   return (
     <img
       src="/images/leadwalnut-logo.svg"
       alt="Lead Walnut Logo"
       className={cn(size ? sizeClasses[size] : "", className)}
+      onClick={() => navigate("/")}
     />
   );
 }

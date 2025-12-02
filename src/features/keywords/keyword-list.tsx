@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { getKeywords } from "@/lib/utils/api";
+import { getKeywords, deleteKeyword, getClients } from "@/lib/utils/api";
 import type { KeywordWithClient } from "@/types/database";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,10 +25,24 @@ export function KeywordList() {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingKeyword, setEditingKeyword] = useState<KeywordWithClient | null>(null);
+  const [clientId, setClientId] = useState<number | null>(null);
 
   const loadKeywords = async () => {
     try {
-      const data = await getKeywords(clientName ?? "");
+      if (!clientName) return;
+
+      // Resolve client ID if not already set
+      let currentClientId = clientId;
+      if (!currentClientId) {
+        const clients = await getClients();
+        const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
+        if (client) {
+          currentClientId = client.id;
+          setClientId(client.id);
+        }
+      }
+
+      const data = await getKeywords(clientName);
       setAllKeywords(data);
     } catch (error) {
       console.error("Failed to load keywords:", error);
@@ -60,8 +74,12 @@ export function KeywordList() {
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this keyword?")) return;
-    // TODO: Implement delete functionality
-    console.log("Delete keyword:", id);
+    try {
+      await deleteKeyword(id);
+      loadKeywords();
+    } catch (error) {
+      console.error("Failed to delete keyword:", error);
+    }
   };
 
   if (loading) {
@@ -190,6 +208,7 @@ export function KeywordList() {
           }
         }}
         keyword={editingKeyword}
+        clientId={clientId}
         onSuccess={loadKeywords}
       />
     </div>

@@ -3,11 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { EngagementChart } from "./engagement-chart";
 import { TimePeriodFilter, type TimePeriod } from "./time-period-filter";
 import { processEngagementData } from "@/utils/engagement-utils";
-import type { AlertWithRelations } from "@/types/database";
+import type { Alert } from "@/types/database";
 import { Activity } from "lucide-react";
 
 interface EngagementTrendsProps {
-  alerts: AlertWithRelations[];
+  alerts: Alert[];
 }
 
 export function EngagementTrends({ alerts }: EngagementTrendsProps) {

@@ -25,7 +25,7 @@ export function Header() {
 
   return (
     <header className="bg-background/95 border-lw-neutral-cloud supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 flex h-20 items-center gap-4 border-b px-4 shadow-sm backdrop-blur md:px-6">
-      <div className="from-lw-primary to-lw-accent-dark absolute top-0 left-0 h-1 w-full bg-gradient-to-r"></div>
+      <div className="from-lw-primary to-lw-accent-dark absolute top-0 left-0 h-1 w-full bg-linear-to-r"></div>
 
       <Logo size="md" className="h-12 w-auto" />
 

@@ -11,28 +11,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { createKeyword, updateKeyword, getClients } from "@/lib/utils/api";
+
+import { createKeyword, updateKeyword } from "@/lib/utils/api";
 import type { KeywordWithClient } from "@/types/database";
-import type { Client } from "@/types/database";
+
 
 interface KeywordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   keyword?: KeywordWithClient | null;
+  clientId: number | null;
   onSuccess?: () => void;
 }
 
-export function KeywordDialog({ open, onOpenChange, keyword, onSuccess }: KeywordDialogProps) {
-  const [clients, setClients] = useState<Client[]>([]);
+export function KeywordDialog({
+  open,
+  onOpenChange,
+  keyword,
+  clientId,
+  onSuccess,
+}: KeywordDialogProps) {
   const [keywordText, setKeywordText] = useState("");
-  const [clientId, setClientId] = useState<string>("");
   const [subreddit, setSubreddit] = useState("all");
   const [email, setEmail] = useState("");
   const [includeComments, setIncludeComments] = useState(false);
@@ -40,22 +39,11 @@ export function KeywordDialog({ open, onOpenChange, keyword, onSuccess }: Keywor
   const [active, setActive] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function loadClients() {
-      try {
-        const data = await getClients();
-        setClients(data);
-      } catch (error) {
-        console.error("Failed to load clients:", error);
-      }
-    }
-    loadClients();
-  }, []);
+
 
   useEffect(() => {
     if (keyword) {
       setKeywordText(keyword.keyword);
-      setClientId(keyword.client_id.toString());
       setSubreddit(keyword.subreddit);
       setEmail(keyword.email);
       setIncludeComments(keyword.include_comments);
@@ -63,7 +51,6 @@ export function KeywordDialog({ open, onOpenChange, keyword, onSuccess }: Keywor
       setActive(keyword.active);
     } else {
       setKeywordText("");
-      setClientId("");
       setSubreddit("all");
       setEmail("");
       setIncludeComments(false);
@@ -79,7 +66,6 @@ export function KeywordDialog({ open, onOpenChange, keyword, onSuccess }: Keywor
     try {
       if (keyword) {
         await updateKeyword(keyword.id, {
-          client_id: parseInt(clientId),
           keyword: keywordText,
           subreddit,
           email,
@@ -88,8 +74,10 @@ export function KeywordDialog({ open, onOpenChange, keyword, onSuccess }: Keywor
           active,
         });
       } else {
-        await createKeyword({
-          client_id: parseInt(clientId),
+        if (!clientId) {
+          throw new Error("Client ID is required");
+        }
+        await createKeyword(clientId, {
           keyword: keywordText,
           subreddit,
           email,
@@ -121,21 +109,7 @@ export function KeywordDialog({ open, onOpenChange, keyword, onSuccess }: Keywor
             </DialogDescription>
           </DialogHeader>
           <div className="max-h-[60vh] space-y-4 overflow-y-auto py-4">
-            <div className="space-y-2">
-              <Label htmlFor="client">Client *</Label>
-              <Select value={clientId} onValueChange={setClientId} required>
-                <SelectTrigger id="client">
-                  <SelectValue placeholder="Select a client" />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients.map((client) => (
-                    <SelectItem key={client.id} value={client.id.toString()}>
-                      {client.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+
             <div className="space-y-2">
               <Label htmlFor="keyword">Keyword *</Label>
               <Input

@@ -1,6 +1,5 @@
-// import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import {
   Search,
@@ -14,9 +13,10 @@ import {
   Clock,
   Zap,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function Landing() {
-  const features = [
+  const FEATURES = [
     {
       icon: Search,
       title: "Keyword Monitoring",
@@ -55,7 +55,7 @@ export function Landing() {
     },
   ];
 
-  const capabilities = [
+  const CAPABILITIES = [
     {
       icon: Eye,
       title: "View All Activity",
@@ -82,9 +82,10 @@ export function Landing() {
     },
   ];
 
+  const navigate = useNavigate();
+
   return (
-    <div className="from-background to-muted/30 min-h-screen bg-gradient-to-b">
-      {/* Header */}
+    <div className="from-background to-muted/30 min-h-screen bg-linear-to-b">
       <header className="bg-background/80 sticky top-0 z-50 border-b backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -95,7 +96,6 @@ export function Landing() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 md:py-24">
         <div className="mx-auto max-w-4xl space-y-6 text-center">
           <div className="inline-block">
@@ -114,7 +114,10 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Features Grid */}
+      <Button className="mx-auto block" onClick={() => navigate("/dashboard")}>
+        View Dashboard
+      </Button>
+
       <section className="container mx-auto px-4 py-16">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold">Core Features</h2>
@@ -123,7 +126,7 @@ export function Landing() {
           </p>
         </div>
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => (
+          {FEATURES.map((feature, index) => (
             <Card
               key={index}
               className="hover:border-lw-primary/50 border-2 transition-all duration-300 hover:shadow-lg"
@@ -144,7 +147,6 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Capabilities Section */}
       <section className="bg-muted/30 container mx-auto my-16 rounded-3xl px-4 py-16">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold">Dashboard Capabilities</h2>
@@ -153,7 +155,7 @@ export function Landing() {
           </p>
         </div>
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {capabilities.map((capability, index) => (
+          {CAPABILITIES.map((capability, index) => (
             <Card key={index} className="text-center transition-all duration-300 hover:shadow-md">
               <CardHeader>
                 <div className="bg-lw-accent/10 mx-auto mb-3 w-fit rounded-full p-3">
@@ -169,7 +171,6 @@ export function Landing() {
         </div>
       </section>
 
-      {/* What You Can Do */}
       <section className="container mx-auto px-4 py-16">
         <div className="mx-auto max-w-4xl">
           <div className="mb-12 text-center">
@@ -242,40 +243,6 @@ export function Landing() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      {/* <section className="container mx-auto px-4 py-16">
-        <Card className="from-lw-primary to-lw-accent mx-auto max-w-4xl border-0 bg-gradient-to-r text-white">
-          <CardHeader className="pb-4 text-center">
-            <CardTitle className="mb-2 text-3xl">Ready to Get Started?</CardTitle>
-            <CardDescription className="text-lg text-white/90">
-              Access your client dashboard to start monitoring Reddit conversations
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-8 text-center">
-            <p className="mb-6 text-white/80">
-              Enter your client dashboard URL to access your personalized monitoring interface
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link to="/efax">
-                <Button size="lg" variant="secondary" className="font-semibold">
-                  Example: eFax Dashboard
-                </Button>
-              </Link>
-              <Link to="/splashtop">
-                <Button size="lg" variant="secondary" className="font-semibold">
-                  Example: Splashtop Dashboard
-                </Button>
-              </Link>
-            </div>
-            <p className="mt-4 text-sm text-white/70">
-              Access your dashboard at:{" "}
-              <code className="rounded bg-white/20 px-2 py-1">/{"{client-name}"}</code>
-            </p>
-          </CardContent>
-        </Card>
-      </section> */}
-
-      {/* Footer */}
       <footer className="mt-16 border-t">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col items-center justify-center gap-4 md:flex-row">

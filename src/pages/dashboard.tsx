@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { StatCard } from "@/components/ui/stat-card";
 import { Hash, Bell, FileText } from "lucide-react";
-import { getDashboardStats, getAlerts } from "@/lib/utils/api";
+import { getDashboardStats, getAllAlerts, getClients } from "@/lib/utils/api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "react-router-dom";
 import { EngagementTrends } from "@/components/charts/engagement-trends";
-import type { AlertWithRelations } from "@/types/database";
+import type { Alert } from "@/types/database";
 
 export function Dashboard() {
   const [stats, setStats] = useState({
@@ -14,7 +14,7 @@ export function Dashboard() {
     alerts: 0,
     threads: 0,
   });
-  const [alerts, setAlerts] = useState<AlertWithRelations[]>([]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const clientName = params.id;
@@ -22,14 +22,27 @@ export function Dashboard() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [statsData, alertsData] = await Promise.all([
-          getDashboardStats(clientName ?? ""),
-          getAlerts(clientName ?? ""),
-        ]);
-        setStats(statsData);
-        setAlerts(alertsData);
+        const statsData = await getDashboardStats();
+        setStats({
+          keywords: statsData.total_keywords,
+          alerts: statsData.total_alerts_today,
+          threads: statsData.total_subreddits,
+        });
       } catch (error) {
-        console.error("Failed to load dashboard data:", error);
+        console.error("Failed to load dashboard stats:", error);
+      }
+
+      try {
+        if (clientName) {
+          const clients = await getClients();
+          const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
+          if (client) {
+            const alertsData = await getAllAlerts({ client_id: client.id });
+            setAlerts(alertsData);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load alerts:", error);
       } finally {
         setLoading(false);
       }
@@ -87,25 +100,25 @@ export function Dashboard() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <StatCard
-          title="Monitored Keywords"
+          title="Number of Keywords Monitored"
           value={stats.keywords}
           icon={Hash}
           description="Unique active keywords being monitored"
           className="border-lw-accent/20 hover:border-lw-accent/40 transition-all duration-200 hover:shadow-md"
         />
         <StatCard
-          title="Email Alert sent"
-          value={stats.alerts}
-          icon={Bell}
-          description="Recommendations sent (2 per thread)"
-          className="border-lw-purple/20 hover:border-lw-purple/40 transition-all duration-200 hover:shadow-md"
-        />
-        <StatCard
-          title="Opportunities Found"
+          title="Relevant Reddit Threads Detected"
           value={stats.threads}
           icon={FileText}
           description="Reddit opportunities with keyword matches"
           className="border-lw-amber/20 hover:border-lw-amber/40 transition-all duration-200 hover:shadow-md"
+        />
+        <StatCard
+          title="Number of Responses Sent"
+          value={stats.alerts}
+          icon={Bell}
+          description="Recommendations sent (2 per thread)"
+          className="border-lw-purple/20 hover:border-lw-purple/40 transition-all duration-200 hover:shadow-md"
         />
       </div>
       <EngagementTrends alerts={alerts} />

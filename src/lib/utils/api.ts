@@ -1,217 +1,147 @@
-import { supabase } from "../supabase";
 import type {
   Client,
   Keyword,
   ClientEmail,
-  ProcessedPost,
-  ProcessedComment,
   KeywordWithClient,
-  AlertWithRelations,
+  DashboardStats,
+  Alert,
 } from "@/types/database";
 
-// Clients API
-export async function getClients() {
-  const { data, error } = await supabase
-    .from("clients")
-    .select("*")
-    .order("created_at", { ascending: false });
+const API_BASE_URL = "http://localhost:8000";
 
-  if (error) throw error;
-  return data as Client[];
+async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || "API request failed");
+  }
+
+  return response.json();
+}
+
+export async function getClients(activeOnly = false) {
+  return fetchApi<Client[]>(`/api/clients?active_only=${activeOnly}`);
 }
 
 export async function getClient(id: number) {
-  const { data, error } = await supabase.from("clients").select("*").eq("id", id).single();
-
-  if (error) throw error;
-  return data as Client;
+  return fetchApi<Client>(`/api/clients/${id}`);
 }
 
 export async function createClient(client: Omit<Client, "id" | "created_at">) {
-  const { data, error } = await supabase.from("clients").insert([client]).select().single();
-
-  if (error) throw error;
-  return data as Client;
+  return fetchApi<Client>("/api/clients", {
+    method: "POST",
+    body: JSON.stringify(client),
+  });
 }
 
 export async function updateClient(
   id: number,
   updates: Partial<Omit<Client, "id" | "created_at">>
 ) {
-  const { data, error } = await supabase
-    .from("clients")
-    .update(updates)
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data as Client;
+  return fetchApi<Client>(`/api/clients/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(updates),
+  });
 }
 
-// Keywords API - Filtered for Splashtop (active keywords only)
+export async function deleteClient(id: number) {
+  return fetchApi<{ success: true; message: string }>(`/api/clients/${id}`, {
+    method: "DELETE",
+  });
+}
+
 export async function getKeywords(clientName: string) {
-  // Get Splashtop client
-  const { data: client } = await supabase
-    .from("clients")
-    .select("id")
-    .ilike("name", clientName)
-    .single();
+  const clients = await getClients();
+  const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
 
-  const { data, error } = await supabase
-    .from("keywords")
-    .select("*, client:clients(*)")
-    .eq("client_id", client?.id)
-    .eq("active", true)
-    .order("created_at", { ascending: false });
+  if (!client) {
+    throw new Error(`Client not found: ${clientName}`);
+  }
 
-  if (error) throw error;
-  return data as KeywordWithClient[];
+  return getKeywordsByClient(client.id);
 }
 
 export async function getKeywordsByClient(clientId: number) {
-  const { data, error } = await supabase
-    .from("keywords")
-    .select("*, client:clients(*)")
-    .eq("client_id", clientId)
-    .order("created_at", { ascending: false });
-
-  if (error) throw error;
-  return data as KeywordWithClient[];
+  return fetchApi<KeywordWithClient[]>(`/api/clients/${clientId}/keywords`);
 }
 
-export async function createKeyword(keyword: Omit<Keyword, "id" | "created_at">) {
-  const { data, error } = await supabase.from("keywords").insert([keyword]).select().single();
-
-  if (error) throw error;
-  return data as Keyword;
+export async function createKeyword(
+  clientId: number,
+  keyword: Omit<Keyword, "id" | "created_at" | "client_id">
+) {
+  return fetchApi<Keyword>(`/api/clients/${clientId}/keywords`, {
+    method: "POST",
+    body: JSON.stringify(keyword),
+  });
 }
 
 export async function updateKeyword(
   id: number,
-  updates: Partial<Omit<Keyword, "id" | "created_at">>
+  updates: Partial<Omit<Keyword, "id" | "created_at" | "client_id">>
 ) {
-  const { data, error } = await supabase
-    .from("keywords")
-    .update(updates)
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data as Keyword;
+  return fetchApi<Keyword>(`/api/keywords/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(updates),
+  });
 }
 
-export async function getAlerts(clientName: string) {
-  const { data: client } = await supabase
-    .from("clients")
-    .select("id")
-    .ilike("name", clientName)
-    .single();
-
-  const { data, error } = await supabase
-    .from("alerts")
-    .select("*, client:clients(*), keyword:keywords(*)")
-    .eq("client_id", client?.id)
-    .order("sent_at", { ascending: false });
-
-  if (error) throw error;
-  return data as AlertWithRelations[];
+export async function deleteKeyword(id: number) {
+  return fetchApi<{ success: true; message: string }>(`/api/keywords/${id}`, {
+    method: "DELETE",
+  });
 }
 
-export async function getAlertsByClient(clientId: number) {
-  const { data, error } = await supabase
-    .from("alerts")
-    .select("*, client:clients(*), keyword:keywords(*)")
-    .eq("client_id", clientId)
-    .order("sent_at", { ascending: false });
+export async function getAllAlerts(params?: {
+  client_id?: number;
+  limit?: number;
+  offset?: number;
+}) {
+  const queryParams = new URLSearchParams();
+  if (params?.client_id) queryParams.append("client_id", params.client_id.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+  if (params?.offset) queryParams.append("offset", params.offset.toString());
 
-  if (error) throw error;
-  return data as AlertWithRelations[];
+  const queryString = queryParams.toString();
+  return fetchApi<Alert[]>(`/api/alerts${queryString ? `?${queryString}` : ""}`);
 }
 
-export async function getAlertsByKeyword(keywordId: number) {
-  const { data, error } = await supabase
-    .from("alerts")
-    .select("*, client:clients(*), keyword:keywords(*)")
-    .eq("keyword_id", keywordId)
-    .order("sent_at", { ascending: false });
-
-  if (error) throw error;
-  return data as AlertWithRelations[];
-}
-
-export async function getProcessedPosts(limit = 100) {
-  const { data, error } = await supabase
-    .from("processed_posts")
-    .select("*")
-    .order("processed_timestamp", { ascending: false })
-    .limit(limit);
-
-  if (error) throw error;
-  return data as ProcessedPost[];
-}
-
-export async function getProcessedComments(limit = 100) {
-  const { data, error } = await supabase
-    .from("processed_comments")
-    .select("*")
-    .order("processed_timestamp", { ascending: false })
-    .limit(limit);
-
-  if (error) throw error;
-  return data as ProcessedComment[];
+export async function getDashboardStats() {
+  return fetchApi<DashboardStats>("/api/dashboard");
 }
 
 export async function getClientEmails(clientId: number) {
-  const { data, error } = await supabase
-    .from("client_emails")
-    .select("*")
-    .eq("client_id", clientId)
-    .order("is_primary", { ascending: false });
-
-  if (error) throw error;
-  return data as ClientEmail[];
+  return fetchApi<ClientEmail[]>(`/api/clients/${clientId}/emails`);
 }
 
-export async function getDashboardStats(clientName: string) {
-  try {
-    const { data: client } = await supabase
-      .from("clients")
-      .select("id")
-      .ilike("name", clientName)
-      .single();
+export async function createClientEmail(
+  clientId: number,
+  email: Omit<ClientEmail, "id" | "created_at" | "client_id">
+) {
+  return fetchApi<ClientEmail>(`/api/clients/${clientId}/emails`, {
+    method: "POST",
+    body: JSON.stringify(email),
+  });
+}
 
-    const [keywordsResult, alertsResult] = await Promise.all([
-      supabase.from("keywords").select("keyword").eq("client_id", client?.id).eq("active", true),
-      supabase.from("alerts").select("url").eq("client_id", client?.id).not("url", "is", null),
-    ]);
+export async function updateClientEmail(
+  id: number,
+  updates: Partial<Omit<ClientEmail, "id" | "created_at" | "client_id" | "email">>
+) {
+  return fetchApi<ClientEmail>(`/api/emails/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(updates),
+  });
+}
 
-    const uniqueKeywords = new Set(keywordsResult.data?.map((k) => k.keyword.toLowerCase()) || []);
-
-    const uniqueThreads = new Set(
-      alertsResult.data
-        ?.map((alert) => {
-          const match = alert.url?.match(/\/comments\/([a-z0-9]+)\//);
-          return match ? match[1] : null;
-        })
-        .filter((id): id is string => id !== null) || []
-    );
-
-    const threadsCount = uniqueThreads.size;
-    const alertsCount = threadsCount * 2;
-
-    return {
-      keywords: uniqueKeywords.size,
-      alerts: alertsCount,
-      threads: threadsCount,
-    };
-  } catch (error) {
-    console.error("Error fetching dashboard stats:", error);
-    return {
-      keywords: 0,
-      alerts: 0,
-      threads: 0,
-    };
-  }
+export async function deleteClientEmail(id: number) {
+  return fetchApi<{ success: true; message: string }>(`/api/emails/${id}`, {
+    method: "DELETE",
+  });
 }
