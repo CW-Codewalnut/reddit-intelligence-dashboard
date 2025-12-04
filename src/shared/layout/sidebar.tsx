@@ -6,8 +6,8 @@ import { cn } from "@/lib/cn";
 import { useMobile } from "@/shared/hooks/use-mobile";
 import { Button } from "@/shared/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
-import { useMemo, useEffect, useState } from "react";
-import { getClients } from "@/lib/api";
+import { useMemo } from "react";
+import { useClients } from "@/shared/hooks/queries";
 import type { Client } from "@/shared/types/database";
 import {
   DropdownMenu,
@@ -29,26 +29,11 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const params = useParams();
   const clientName = params.id;
 
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: clients = [], isLoading: loading } = useClients(true);
 
   const currentClient = useMemo(() => {
     return clients.find((c) => c.name.toLowerCase() === clientName?.toLowerCase());
   }, [clients, clientName]);
-
-  useEffect(() => {
-    const loadClients = async () => {
-      try {
-        const data = await getClients(true);
-        setClients(data);
-      } catch (error) {
-        console.error("Failed to load clients:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadClients();
-  }, []);
 
   const handleClientChange = (client: Client) => {
     const currentPath = location.pathname;

@@ -1,67 +1,48 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { StatCard } from "@/shared/ui/stat-card";
 import { Hash, Bell, FileText } from "lucide-react";
-import {
-  getDashboardStats,
-  getAllAlerts,
-  getClients,
-  getKeywordsByClient,
-  getAiSuggestions,
-} from "@/lib/api";
 import { Card, CardContent, CardHeader } from "@/shared/ui/card";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { useParams } from "react-router-dom";
 import { EngagementTrends } from "@/features/dashboard/engagement-trends";
-import type { Alert } from "@/shared/types/database";
+import {
+  useClients,
+  useKeywords,
+  useAiSuggestions,
+  useAlerts,
+  useDashboardStats,
+} from "@/shared/hooks/queries";
 
 export function Dashboard() {
-  const [stats, setStats] = useState({
-    keywords: 0,
-    aiSuggestions: 0,
-    threads: 0,
-  });
-  const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [loading, setLoading] = useState(true);
   const params = useParams();
   const clientName = params.id;
 
-  useEffect(() => {
-    async function loadData() {
-      if (!clientName) {
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
+  const { data: clients } = useClients();
+  const client = useMemo(
+    () => clients?.find((c) => c.name.toLowerCase() === clientName?.toLowerCase()),
+    [clients, clientName]
+  );
 
-      try {
-        const clients = await getClients();
-        const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
+  const { data: keywordsData, isLoading: keywordsLoading } = useKeywords(client?.id);
+  const { data: aiSuggestionsData, isLoading: aiSuggestionsLoading } = useAiSuggestions({
+    client_id: client?.id,
+  });
+  const { data: alertsData, isLoading: alertsLoading } = useAlerts({
+    client_id: client?.id,
+  });
+  const { data: dashboardStatsData, isLoading: dashboardStatsLoading } = useDashboardStats();
 
-        if (client) {
-          const keywordsData = await getKeywordsByClient(client.id);
-          const uniqueKeywords = new Set(keywordsData.map((k) => k.keyword.toLowerCase()));
+  const stats = useMemo(() => {
+    const uniqueKeywords = new Set(keywordsData?.map((k) => k.keyword.toLowerCase()) || []);
 
-          const aiSuggestionsData = await getAiSuggestions({ client_id: client.id });
+    return {
+      keywords: uniqueKeywords.size,
+      aiSuggestions: aiSuggestionsData?.length || 0,
+      threads: dashboardStatsData?.total_subreddits || 0,
+    };
+  }, [keywordsData, aiSuggestionsData, dashboardStatsData]);
 
-          const alertsData = await getAllAlerts({ client_id: client.id });
-          setAlerts(alertsData);
-
-          const statsData = await getDashboardStats();
-
-          setStats({
-            keywords: uniqueKeywords.size,
-            aiSuggestions: aiSuggestionsData.length,
-            threads: statsData.total_subreddits,
-          });
-        }
-      } catch (error) {
-        console.error("Failed to load dashboard data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, [clientName]);
+  const loading = keywordsLoading || aiSuggestionsLoading || alertsLoading || dashboardStatsLoading;
 
   if (loading) {
     return (
@@ -134,7 +115,7 @@ export function Dashboard() {
           className="border-lw-purple/20 hover:border-lw-purple/40 transition-all duration-200 hover:shadow-md"
         />
       </div>
-      <EngagementTrends alerts={alerts} />
+      <EngagementTrends alerts={alertsData || []} />
     </div>
   );
 }

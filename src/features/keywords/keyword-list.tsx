@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
-import { getKeywords, deleteKeyword, getClients } from "@/lib/api";
+import { useState, useMemo } from "react";
 import type { KeywordWithClient } from "@/shared/types/database";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
@@ -10,42 +9,24 @@ import { KeywordDialog } from "./keyword-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { useParams } from "react-router-dom";
+import { useClients, useKeywords } from "@/shared/hooks/queries";
+import { useDeleteKeyword } from "@/shared/hooks/mutations";
 
 export function KeywordList() {
   const params = useParams();
   const clientName = params.id;
-  const [allKeywords, setAllKeywords] = useState<KeywordWithClient[]>([]);
-  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingKeyword, setEditingKeyword] = useState<KeywordWithClient | null>(null);
-  const [clientId, setClientId] = useState<number | null>(null);
 
-  const loadKeywords = async () => {
-    if (!clientName) {
-      setLoading(false);
-      return;
-    }
+  const { data: clients } = useClients();
+  const client = useMemo(
+    () => clients?.find((c) => c.name.toLowerCase() === clientName?.toLowerCase()),
+    [clients, clientName]
+  );
 
-    setLoading(true);
+  const { data: allKeywords = [], isLoading: loading } = useKeywords(client?.id);
 
-    try {
-      const clients = await getClients();
-      const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
-      if (client) {
-        setClientId(client.id);
-        const data = await getKeywords(clientName);
-        setAllKeywords(data);
-      }
-    } catch (error) {
-      console.error("Failed to load keywords:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadKeywords();
-  }, [clientName]);
+  const deleteKeywordMutation = useDeleteKeyword();
 
   const groupedKeywords = useMemo(() => {
     const groups = new Map<string, KeywordWithClient[]>();
@@ -67,8 +48,7 @@ export function KeywordList() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this keyword?")) return;
     try {
-      await deleteKeyword(id);
-      loadKeywords();
+      await deleteKeywordMutation.mutateAsync(id);
     } catch (error) {
       console.error("Failed to delete keyword:", error);
     }
@@ -210,8 +190,8 @@ export function KeywordList() {
           }
         }}
         keyword={editingKeyword}
-        clientId={clientId}
-        onSuccess={loadKeywords}
+        clientId={client?.id || null}
+        onSuccess={() => {}}
       />
     </div>
   );

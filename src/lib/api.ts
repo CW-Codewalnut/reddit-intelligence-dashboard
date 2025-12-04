@@ -1,7 +1,6 @@
 import type {
   Client,
   Keyword,
-  ClientEmail,
   KeywordWithClient,
   DashboardStats,
   Alert,
@@ -33,29 +32,6 @@ export async function getClients(activeOnly = false) {
 
 export async function getClient(id: number) {
   return fetchApi<Client>(`/api/clients/${id}`);
-}
-
-export async function createClient(client: Omit<Client, "id" | "created_at">) {
-  return fetchApi<Client>("/api/clients", {
-    method: "POST",
-    body: JSON.stringify(client),
-  });
-}
-
-export async function updateClient(
-  id: number,
-  updates: Partial<Omit<Client, "id" | "created_at">>
-) {
-  return fetchApi<Client>(`/api/clients/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(updates),
-  });
-}
-
-export async function deleteClient(id: number) {
-  return fetchApi<{ success: true; message: string }>(`/api/clients/${id}`, {
-    method: "DELETE",
-  });
 }
 
 export async function getKeywords(clientName: string) {
@@ -115,36 +91,6 @@ export async function getAllAlerts(params?: {
 
 export async function getDashboardStats() {
   return fetchApi<DashboardStats>("/api/dashboard");
-}
-
-export async function getClientEmails(clientId: number) {
-  return fetchApi<ClientEmail[]>(`/api/clients/${clientId}/emails`);
-}
-
-export async function createClientEmail(
-  clientId: number,
-  email: Omit<ClientEmail, "id" | "created_at" | "client_id">
-) {
-  return fetchApi<ClientEmail>(`/api/clients/${clientId}/emails`, {
-    method: "POST",
-    body: JSON.stringify(email),
-  });
-}
-
-export async function updateClientEmail(
-  id: number,
-  updates: Partial<Omit<ClientEmail, "id" | "created_at" | "client_id" | "email">>
-) {
-  return fetchApi<ClientEmail>(`/api/emails/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(updates),
-  });
-}
-
-export async function deleteClientEmail(id: number) {
-  return fetchApi<{ success: true; message: string }>(`/api/emails/${id}`, {
-    method: "DELETE",
-  });
 }
 
 export async function getAiSuggestions(params?: {

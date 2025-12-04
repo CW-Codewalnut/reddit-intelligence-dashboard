@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import { getAiSuggestions, getClients } from "@/lib/api";
-import type { AiSuggestion } from "@/shared/types/database";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Lightbulb } from "lucide-react";
 import {
@@ -15,40 +13,23 @@ import { useParams } from "react-router-dom";
 import { SuggestionCard } from "./suggestion-card";
 import { LoadingState } from "@/shared/ui/loading-state";
 import { EmptyState } from "@/shared/ui/empty-state";
+import { useClients, useAiSuggestions } from "@/shared/hooks/queries";
 
 export function AiSuggestions() {
-  const [allSuggestions, setAllSuggestions] = useState<AiSuggestion[]>([]);
-  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const params = useParams();
   const clientName = params.id;
 
-  const loadSuggestions = async () => {
-    if (!clientName) {
-      setLoading(false);
-      return;
-    }
+  const { data: clients } = useClients();
+  const client = useMemo(
+    () => clients?.find((c) => c.name.toLowerCase() === clientName?.toLowerCase()),
+    [clients, clientName]
+  );
 
-    setLoading(true);
-
-    try {
-      const clients = await getClients();
-      const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
-      if (client) {
-        const data = await getAiSuggestions({ client_id: client.id });
-        setAllSuggestions(data);
-      }
-    } catch (error) {
-      console.error("Failed to load AI suggestions:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadSuggestions();
-  }, [clientName]);
+  const { data: allSuggestions = [], isLoading: loading } = useAiSuggestions({
+    client_id: client?.id,
+  });
 
   const totalPages = Math.ceil(allSuggestions.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;

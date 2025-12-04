@@ -11,8 +11,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Switch } from "@/shared/ui/switch";
-
-import { createKeyword, updateKeyword } from "@/lib/api";
+import { useCreateKeyword, useUpdateKeyword } from "@/shared/hooks/mutations";
 import type { KeywordWithClient } from "@/shared/types/database";
 
 interface KeywordDialogProps {
@@ -36,7 +35,11 @@ export function KeywordDialog({
   const [includeComments, setIncludeComments] = useState(false);
   const [useRegex, setUseRegex] = useState(false);
   const [active, setActive] = useState(true);
-  const [loading, setLoading] = useState(false);
+
+  const createKeywordMutation = useCreateKeyword();
+  const updateKeywordMutation = useUpdateKeyword();
+
+  const loading = createKeywordMutation.isPending || updateKeywordMutation.isPending;
 
   useEffect(() => {
     if (keyword) {
@@ -58,29 +61,34 @@ export function KeywordDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       if (keyword) {
-        await updateKeyword(keyword.id, {
-          keyword: keywordText,
-          subreddit,
-          email,
-          include_comments: includeComments,
-          use_regex: useRegex,
-          active,
+        await updateKeywordMutation.mutateAsync({
+          id: keyword.id,
+          updates: {
+            keyword: keywordText,
+            subreddit,
+            email,
+            include_comments: includeComments,
+            use_regex: useRegex,
+            active,
+          },
         });
       } else {
         if (!clientId) {
           throw new Error("Client ID is required");
         }
-        await createKeyword(clientId, {
-          keyword: keywordText,
-          subreddit,
-          email,
-          include_comments: includeComments,
-          use_regex: useRegex,
-          active,
+        await createKeywordMutation.mutateAsync({
+          clientId,
+          keyword: {
+            keyword: keywordText,
+            subreddit,
+            email,
+            include_comments: includeComments,
+            use_regex: useRegex,
+            active,
+          },
         });
       }
       onSuccess?.();
@@ -88,8 +96,6 @@ export function KeywordDialog({
     } catch (error) {
       console.error("Failed to save keyword:", error);
       alert("Failed to save keyword. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import { getAllAlerts, getClients } from "@/lib/api";
-import type { Alert } from "@/shared/types/database";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
 import { formatDateTime, formatRelativeTime } from "@/lib/formatters";
@@ -17,38 +15,23 @@ import {
   PaginationPrevious,
 } from "@/shared/ui/pagination";
 import { useParams } from "react-router-dom";
+import { useClients, useAlerts } from "@/shared/hooks/queries";
+
 export function AlertList() {
-  const [allAlerts, setAllAlerts] = useState<Alert[]>([]);
-  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const params = useParams();
   const clientName = params.id;
-  const loadAlerts = async () => {
-    if (!clientName) {
-      setLoading(false);
-      return;
-    }
 
-    setLoading(true);
+  const { data: clients } = useClients();
+  const client = useMemo(
+    () => clients?.find((c) => c.name.toLowerCase() === clientName?.toLowerCase()),
+    [clients, clientName]
+  );
 
-    try {
-      const clients = await getClients();
-      const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
-      if (client) {
-        const data = await getAllAlerts({ client_id: client.id });
-        setAllAlerts(data);
-      }
-    } catch (error) {
-      console.error("Failed to load alerts:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadAlerts();
-  }, [clientName]);
+  const { data: allAlerts = [], isLoading: loading } = useAlerts({
+    client_id: client?.id,
+  });
 
   const totalPages = Math.ceil(allAlerts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
