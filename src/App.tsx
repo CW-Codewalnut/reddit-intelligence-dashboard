@@ -4,6 +4,7 @@ import { Dashboard } from "@/features/dashboard/dashboard";
 import { LandingPage } from "@/features/landingpage/landing-page";
 import { KeywordList } from "@/features/keywords/keyword-list";
 import { AlertList } from "@/features/alerts/alert-list";
+import { AiSuggestions } from "@/features/ai-suggestions/ai-suggestions";
 
 export const App = () => {
   return (
@@ -14,6 +15,7 @@ export const App = () => {
           <Route index element={<Dashboard />} />
           <Route path="keywords" element={<KeywordList />} />
           <Route path="alerts" element={<AlertList />} />
+          <Route path="ai-suggestions" element={<AiSuggestions />} />
         </Route>
       </Routes>
     </BrowserRouter>

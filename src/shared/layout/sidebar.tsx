@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Hash, Bell, X, Menu, Users, ChevronDown } from "lucide-react";
+import { LayoutDashboard, Hash, Bell, X, Menu, Users, ChevronDown, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useMobile } from "@/shared/hooks/use-mobile";
 import { Button } from "@/shared/ui/button";
@@ -39,7 +39,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   useEffect(() => {
     const loadClients = async () => {
       try {
-        const data = await getClients(true); // Only active clients
+        const data = await getClients(true);
         setClients(data);
       } catch (error) {
         console.error("Failed to load clients:", error);
@@ -54,7 +54,6 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
     const currentPath = location.pathname;
     const pathSegments = currentPath.split("/").filter(Boolean);
 
-    // Replace the client name in the URL
     if (pathSegments.length > 0) {
       pathSegments[0] = client.name.toLowerCase();
       navigate(`/${pathSegments.join("/")}`);
@@ -68,6 +67,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       { name: "Dashboard", href: `/${clientName}/`, icon: LayoutDashboard },
       { name: "Keywords Alerts", href: `/${clientName}/keywords`, icon: Hash },
       { name: "Alerts", href: `/${clientName}/alerts`, icon: Bell },
+      { name: "AI Suggestions", href: `/${clientName}/ai-suggestions`, icon: Lightbulb },
     ];
   }, [clientName]);
 

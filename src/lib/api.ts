@@ -5,9 +5,10 @@ import type {
   KeywordWithClient,
   DashboardStats,
   Alert,
+  AiSuggestion,
 } from "@/shared/types/database";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -144,4 +145,22 @@ export async function deleteClientEmail(id: number) {
   return fetchApi<{ success: true; message: string }>(`/api/emails/${id}`, {
     method: "DELETE",
   });
+}
+
+export async function getAiSuggestions(params?: {
+  client_id?: number;
+  subreddit?: string;
+  was_used?: boolean;
+  limit?: number;
+  offset?: number;
+}) {
+  const queryParams = new URLSearchParams();
+  if (params?.client_id) queryParams.append("client_id", params.client_id.toString());
+  if (params?.subreddit) queryParams.append("subreddit", params.subreddit);
+  if (params?.was_used !== undefined) queryParams.append("was_used", params.was_used.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+  if (params?.offset) queryParams.append("offset", params.offset.toString());
+
+  const queryString = queryParams.toString();
+  return fetchApi<AiSuggestion[]>(`/api/ai-suggestions${queryString ? `?${queryString}` : ""}`);
 }

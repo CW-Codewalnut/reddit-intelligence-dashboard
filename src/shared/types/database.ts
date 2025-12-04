@@ -52,3 +52,26 @@ export interface ClientEmail {
 export interface KeywordWithClient extends Keyword {
   client: Client;
 }
+
+export interface Resource {
+  url: string;
+  title: string;
+  snippet: string;
+}
+
+export interface AiSuggestion {
+  id: number;
+  client_id: number;
+  alert_id: number;
+  post_id: string;
+  post_title: string;
+  post_url: string;
+  post_author: string;
+  subreddit: string;
+  keyword: string;
+  suggestion_text: string;
+  relevance_score: number;
+  user_intent: string;
+  resources: Resource[];
+  generated_at: string;
+}

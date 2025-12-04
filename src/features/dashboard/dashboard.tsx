@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { StatCard } from "@/shared/ui/stat-card";
 import { Hash, Bell, FileText } from "lucide-react";
-import { getDashboardStats, getAllAlerts, getClients } from "@/lib/api";
+import {
+  getDashboardStats,
+  getAllAlerts,
+  getClients,
+  getKeywordsByClient,
+  getAiSuggestions,
+} from "@/lib/api";
 import { Card, CardContent, CardHeader } from "@/shared/ui/card";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { useParams } from "react-router-dom";
@@ -11,7 +17,7 @@ import type { Alert } from "@/shared/types/database";
 export function Dashboard() {
   const [stats, setStats] = useState({
     keywords: 0,
-    alerts: 0,
+    aiSuggestions: 0,
     threads: 0,
   });
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -28,25 +34,28 @@ export function Dashboard() {
       setLoading(true);
 
       try {
-        const statsData = await getDashboardStats();
-        setStats({
-          keywords: statsData.total_keywords,
-          alerts: statsData.total_alerts_today,
-          threads: statsData.total_subreddits,
-        });
-      } catch (error) {
-        console.error("Failed to load dashboard stats:", error);
-      }
-
-      try {
         const clients = await getClients();
         const client = clients.find((c) => c.name.toLowerCase() === clientName.toLowerCase());
+
         if (client) {
+          const keywordsData = await getKeywordsByClient(client.id);
+          const uniqueKeywords = new Set(keywordsData.map((k) => k.keyword.toLowerCase()));
+
+          const aiSuggestionsData = await getAiSuggestions({ client_id: client.id });
+
           const alertsData = await getAllAlerts({ client_id: client.id });
           setAlerts(alertsData);
+
+          const statsData = await getDashboardStats();
+
+          setStats({
+            keywords: uniqueKeywords.size,
+            aiSuggestions: aiSuggestionsData.length,
+            threads: statsData.total_subreddits,
+          });
         }
       } catch (error) {
-        console.error("Failed to load alerts:", error);
+        console.error("Failed to load dashboard data:", error);
       } finally {
         setLoading(false);
       }
@@ -88,7 +97,7 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       <div className="relative">
-        <div className="from-lw-primary/10 to-lw-accent/10 absolute inset-0 -z-10 rounded-xl bg-gradient-to-r"></div>
+        <div className="from-lw-primary/10 to-lw-accent/10 bg-gradien-to-r absolute inset-0 -z-10 rounded-xl"></div>
         <div className="px-6 py-6">
           <h1 className="text-3xl font-bold tracking-tight">
             {clientName
@@ -119,9 +128,9 @@ export function Dashboard() {
         />
         <StatCard
           title="Number of Responses Sent"
-          value={stats.alerts}
+          value={stats.aiSuggestions}
           icon={Bell}
-          description="Recommendations sent (2 per thread)"
+          description="AI-generated response suggestions"
           className="border-lw-purple/20 hover:border-lw-purple/40 transition-all duration-200 hover:shadow-md"
         />
       </div>
