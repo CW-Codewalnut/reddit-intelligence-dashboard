@@ -69,9 +69,10 @@ export interface AiSuggestion {
   post_author: string;
   subreddit: string;
   keyword: string;
-  suggestion_text: string;
   relevance_score: number;
   user_intent: string;
   resources: Resource[];
   generated_at: string;
+  generic_reply: string;
+  official_reply: string;
 }

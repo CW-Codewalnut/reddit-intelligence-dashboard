@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
-import { ExternalLink, TrendingUp } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { formatRelativeTime } from "@/lib/formatters";
 import type { AiSuggestion } from "@/shared/types/database";
 import { ResourcesList } from "./resources-list";
@@ -28,10 +28,10 @@ export function SuggestionCard({ suggestion }: SuggestionCardProps) {
                   {suggestion.keyword}
                 </Badge>
                 <div className="flex items-center gap-1">
-                  <TrendingUp className="text-lw-primary h-4 w-4" />
-                  <span className="text-lw-primary text-sm font-medium">
+                  <p className="text-muted-foreground text-sm font-medium">
+                    <span className="text-lw-primary text-sm font-medium"> RELEVANCE-SCORE : </span>
                     {suggestion.relevance_score}/10
-                  </span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -57,11 +57,20 @@ export function SuggestionCard({ suggestion }: SuggestionCardProps) {
             </div>
           )}
 
-          {suggestion.suggestion_text && (
-            <div className="bg-lw-primary-pale dark:bg-lw-primary-darker rounded-lg p-3">
-              <p className="text-lw-primary-dark dark:text-lw-primary-light text-sm font-medium">
-                <span className="font-semibold">AI Suggestion: </span>
-                {suggestion.suggestion_text}
+          {suggestion.generic_reply && (
+            <div className="border-lw-neutral-cloud bg-muted/50 --lw-primary-lighter rounded-lg border p-3">
+              <p className="text-foreground mb-1 text-sm font-semibold">Generic Reply:</p>
+              <p className="text-muted-foreground text-sm whitespace-pre-wrap">
+                {suggestion.generic_reply}
+              </p>
+            </div>
+          )}
+
+          {suggestion.official_reply && (
+            <div className="border-lw-neutral-cloud bg-muted/50 --lw-primary-lighter rounded-lg border p-3">
+              <p className="text-foreground mb-1 text-sm font-semibold">Official Reply:</p>
+              <p className="text-muted-foreground text-sm whitespace-pre-wrap">
+                {suggestion.official_reply}
               </p>
             </div>
           )}
