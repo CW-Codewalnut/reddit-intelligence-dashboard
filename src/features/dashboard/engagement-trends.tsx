@@ -6,9 +6,9 @@ import { processEngagementData } from "@/features/dashboard/utils/engagement";
 import type { Alert } from "@/shared/types/database";
 import { Activity } from "lucide-react";
 
-interface EngagementTrendsProps {
+type EngagementTrendsProps = {
   alerts: Alert[];
-}
+};
 
 export function EngagementTrends({ alerts }: EngagementTrendsProps) {
   const [period, setPeriod] = useState<TimePeriod>("week");

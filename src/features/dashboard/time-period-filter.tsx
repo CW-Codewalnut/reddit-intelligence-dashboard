@@ -2,10 +2,10 @@ import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
 export type TimePeriod = "week" | "month" | "year";
 
-interface TimePeriodFilterProps {
+type TimePeriodFilterProps = {
   value: TimePeriod;
   onChange: (value: TimePeriod) => void;
-}
+};
 
 export function TimePeriodFilter({ value, onChange }: TimePeriodFilterProps) {
   return (

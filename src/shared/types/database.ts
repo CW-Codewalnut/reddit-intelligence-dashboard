@@ -1,4 +1,4 @@
-export interface Client {
+export type Client = {
   id: number;
   name: string;
   default_email: string | null;
@@ -6,17 +6,17 @@ export interface Client {
   description: string | null;
   active: boolean;
   created_at: string;
-}
+};
 
-export interface DashboardStats {
+export type DashboardStats = {
   total_clients: number;
   total_keywords: number;
   total_subreddits: number;
   total_alerts_today: number;
   active_clients: Client[];
-}
+};
 
-export interface Keyword {
+export type Keyword = {
   id: number;
   client_id: number;
   keyword: string;
@@ -26,9 +26,9 @@ export interface Keyword {
   use_regex: boolean;
   active: boolean;
   created_at: string;
-}
+};
 
-export interface Alert {
+export type Alert = {
   id: number;
   client_id: number;
   keyword_id: number;
@@ -38,28 +38,28 @@ export interface Alert {
   subreddit: string;
   matched_keyword: string;
   sent_at: string;
-}
+};
 
-export interface ClientEmail {
+export type ClientEmail = {
   id: number;
   client_id: number | null;
   email: string;
   is_primary: boolean;
   active: boolean;
   created_at: string;
-}
+};
 
-export interface KeywordWithClient extends Keyword {
+export type KeywordWithClient = Keyword & {
   client: Client;
-}
+};
 
-export interface Resource {
+export type Resource = {
   url: string;
   title: string;
   snippet: string;
-}
+};
 
-export interface AiSuggestion {
+export type AiSuggestion = {
   id: number;
   client_id: number;
   alert_id: number;
@@ -75,4 +75,4 @@ export interface AiSuggestion {
   generated_at: string;
   generic_reply: string;
   official_reply: string;
-}
+};

@@ -14,13 +14,13 @@ import { Switch } from "@/shared/ui/switch";
 import { useCreateKeyword, useUpdateKeyword } from "@/shared/hooks/mutations";
 import type { KeywordWithClient } from "@/shared/types/database";
 
-interface KeywordDialogProps {
+type KeywordDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   keyword?: KeywordWithClient | null;
   clientId: number | null;
   onSuccess?: () => void;
-}
+};
 
 export function KeywordDialog({
   open,

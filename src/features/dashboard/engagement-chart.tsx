@@ -9,9 +9,9 @@ import {
   AreaChart,
 } from "recharts";
 
-interface EngagementChartProps {
+type EngagementChartProps = {
   data: { date: string; count: number; fullDate?: string }[];
-}
+};
 
 export function EngagementChart({ data }: EngagementChartProps) {
   if (data.length === 0) {

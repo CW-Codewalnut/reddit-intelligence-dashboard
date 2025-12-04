@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/cn";
 
-interface LogoProps {
+type LogoProps = {
   className?: string;
   size?: "sm" | "md" | "lg" | "xl";
-}
+};
 
 const sizeClasses = {
   sm: "h-6 w-6",

@@ -16,10 +16,10 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 
-interface SidebarProps {
+type SidebarProps = {
   isOpen: boolean;
   onToggle: () => void;
-}
+};
 
 export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const location = useLocation();

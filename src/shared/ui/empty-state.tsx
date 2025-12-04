@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 
-interface EmptyStateProps {
+type EmptyStateProps = {
   /** Custom message to display */
   message?: string;
   /** Optional icon to display above the message */
   icon?: LucideIcon;
   /** Optional additional content or action buttons */
   children?: ReactNode;
-}
+};
 
 export function EmptyState({ message = "No data found", icon: Icon, children }: EmptyStateProps) {
   return (

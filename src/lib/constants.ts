@@ -12,11 +12,11 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-export interface Feature {
+export type Feature = {
   icon: LucideIcon;
   title: string;
   description: string;
-}
+};
 
 export const FEATURES: Feature[] = [
   {

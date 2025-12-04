@@ -1,14 +1,14 @@
 import { Card, CardContent } from "@/shared/ui/card";
 import { Skeleton } from "@/shared/ui/skeleton";
 
-interface LoadingStateProps {
+type LoadingStateProps = {
   /** Number of skeleton items to show */
   items?: number;
   /** Height of each skeleton item */
   itemHeight?: string;
   /** Show header skeletons */
   showHeader?: boolean;
-}
+};
 
 export function LoadingState({
   items = 5,

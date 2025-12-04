@@ -1,9 +1,9 @@
 import { Button } from "@/shared/ui/button";
 
-interface LandingHeroProps {
+type LandingHeroProps = {
   onViewDashboard: () => void;
   isLoading: boolean;
-}
+};
 
 export function LandingHero({ onViewDashboard, isLoading }: LandingHeroProps) {
   return (

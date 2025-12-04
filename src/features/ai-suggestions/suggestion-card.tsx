@@ -6,9 +6,9 @@ import { formatRelativeTime } from "@/lib/formatters";
 import type { AiSuggestion } from "@/shared/types/database";
 import { ResourcesList } from "./resources-list";
 
-interface SuggestionCardProps {
+type SuggestionCardProps = {
   suggestion: AiSuggestion;
-}
+};
 
 export function SuggestionCard({ suggestion }: SuggestionCardProps) {
   return (

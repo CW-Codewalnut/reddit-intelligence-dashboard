@@ -1,9 +1,9 @@
 import { ExternalLink, BookOpen } from "lucide-react";
 import type { Resource } from "@/shared/types/database";
 
-interface ResourcesListProps {
+type ResourcesListProps = {
   resources: Resource[];
-}
+};
 
 export function ResourcesList({ resources }: ResourcesListProps) {
   if (!resources || resources.length === 0) {
