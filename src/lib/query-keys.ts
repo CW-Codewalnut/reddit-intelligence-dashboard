@@ -56,3 +56,8 @@ export const queryKeys = {
     stats: () => [...queryKeys.dashboard.all, "stats"] as const,
   },
 } as const;
+
+export const competitorKeys = {
+  all: ["competitors"] as const,
+  byClient: (clientName: string) => [...competitorKeys.all, clientName] as const,
+} as const;

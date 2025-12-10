@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Hash, Bell, X, Menu, Users, ChevronDown, Lightbulb } from "lucide-react";
+import { LayoutDashboard, Hash, Bell, X, Menu, Users, ChevronDown, Lightbulb, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useMobile } from "@/shared/hooks/use-mobile";
 import { Button } from "@/shared/ui/button";
@@ -53,6 +53,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       { name: "Keywords Alerts", href: `/${clientName}/keywords`, icon: Hash },
       { name: "Alerts", href: `/${clientName}/alerts`, icon: Bell },
       { name: "AI Suggestions", href: `/${clientName}/ai-suggestions`, icon: Lightbulb },
+      { name: "Competitor Analysis", href: `/${clientName}/competitor-analysis`, icon: TrendingUp },
     ];
   }, [clientName]);
 

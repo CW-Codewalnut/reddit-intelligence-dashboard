@@ -76,3 +76,22 @@ export type AiSuggestion = {
   generic_reply: string;
   official_reply: string;
 };
+
+export type KeywordCompetitor = {
+  id: number;
+  keyword_id: number;
+  competitor_name: string;
+  active: boolean;
+  created_at: string;
+};
+
+export type CompetitorStats = {
+  competitor_name: string;
+  total_mentions: number;
+  last_30_days: number;
+};
+
+export type CompetitorMentionsResponse = {
+  success: boolean;
+  competitors: CompetitorStats[];
+};

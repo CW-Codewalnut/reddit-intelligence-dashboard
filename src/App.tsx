@@ -5,6 +5,7 @@ import { LandingPage } from "@/features/landingpage/landing-page";
 import { KeywordList } from "@/features/keywords/keyword-list";
 import { AlertList } from "@/features/alerts/alert-list";
 import { AiSuggestions } from "@/features/ai-suggestions/ai-suggestions";
+import { CompetitorAnalysisPage } from "@/features/competitor-analysis/competitor-analysis";
 
 export const App = () => {
   return (
@@ -16,6 +17,7 @@ export const App = () => {
           <Route path="keywords" element={<KeywordList />} />
           <Route path="alerts" element={<AlertList />} />
           <Route path="ai-suggestions" element={<AiSuggestions />} />
+          <Route path="competitor-analysis" element={<CompetitorAnalysisPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

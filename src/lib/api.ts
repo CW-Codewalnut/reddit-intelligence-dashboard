@@ -5,6 +5,8 @@ import type {
   DashboardStats,
   Alert,
   AiSuggestion,
+  CompetitorMentionsResponse,
+  KeywordCompetitor,
 } from "@/shared/types/database";
 
 // const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -110,4 +112,28 @@ export async function getAiSuggestions(params?: {
 
   const queryString = queryParams.toString();
   return fetchApi<AiSuggestion[]>(`/api/ai-suggestions${queryString ? `?${queryString}` : ""}`);
+}
+
+export async function getClientCompetitors(clientName: string) {
+  return fetchApi<CompetitorMentionsResponse>(`/api/clients/${clientName}/competitors`);
+}
+
+export async function getKeywordCompetitors(keywordId: number) {
+  return fetchApi<KeywordCompetitor[]>(`/api/keywords/${keywordId}/competitors`);
+}
+
+export async function addKeywordCompetitor(keywordId: number, competitorName: string) {
+  return fetchApi<KeywordCompetitor>(`/api/keywords/${keywordId}/competitors`, {
+    method: "POST",
+    body: JSON.stringify({ competitor_name: competitorName }),
+  });
+}
+
+export async function deleteKeywordCompetitor(keywordId: number, competitorId: number) {
+  return fetchApi<{ success: true; message: string }>(
+    `/api/keywords/${keywordId}/competitors/${competitorId}`,
+    {
+      method: "DELETE",
+    }
+  );
 }
