@@ -57,11 +57,6 @@ export function MultiSelect({
     onChange(updated.length === 0 ? [] : updated);
   };
 
-  const handleClear = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onChange([]);
-  };
-
   const displayText = React.useMemo(() => {
     if (selected.length === 0) {
       return placeholder;
