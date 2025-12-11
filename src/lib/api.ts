@@ -6,11 +6,9 @@ import type {
   Alert,
   AiSuggestion,
   CompetitorMentionsResponse,
-  KeywordCompetitor,
 } from "@/shared/types/database";
 
-// const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -118,22 +116,10 @@ export async function getClientCompetitors(clientName: string) {
   return fetchApi<CompetitorMentionsResponse>(`/api/clients/${clientName}/competitors`);
 }
 
-export async function getKeywordCompetitors(keywordId: number) {
-  return fetchApi<KeywordCompetitor[]>(`/api/keywords/${keywordId}/competitors`);
+export async function getAllSubreddits() {
+  return fetchApi<string[]>("/api/subreddits");
 }
 
-export async function addKeywordCompetitor(keywordId: number, competitorName: string) {
-  return fetchApi<KeywordCompetitor>(`/api/keywords/${keywordId}/competitors`, {
-    method: "POST",
-    body: JSON.stringify({ competitor_name: competitorName }),
-  });
-}
-
-export async function deleteKeywordCompetitor(keywordId: number, competitorId: number) {
-  return fetchApi<{ success: true; message: string }>(
-    `/api/keywords/${keywordId}/competitors/${competitorId}`,
-    {
-      method: "DELETE",
-    }
-  );
+export async function getClientSubreddits(clientId: number) {
+  return fetchApi<string[]>(`/api/clients/${clientId}/subreddits`);
 }

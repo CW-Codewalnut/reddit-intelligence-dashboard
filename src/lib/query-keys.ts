@@ -13,8 +13,7 @@ export const queryKeys = {
   clients: {
     all: ["clients"] as const,
     lists: () => [...queryKeys.clients.all, "list"] as const,
-    list: (activeOnly?: boolean) =>
-      [...queryKeys.clients.lists(), { activeOnly }] as const,
+    list: (activeOnly?: boolean) => [...queryKeys.clients.lists(), { activeOnly }] as const,
     details: () => [...queryKeys.clients.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.clients.details(), id] as const,
   },
@@ -23,8 +22,7 @@ export const queryKeys = {
   keywords: {
     all: ["keywords"] as const,
     lists: () => [...queryKeys.keywords.all, "list"] as const,
-    byClient: (clientId: string) =>
-      [...queryKeys.keywords.lists(), clientId] as const,
+    byClient: (clientId: string) => [...queryKeys.keywords.lists(), clientId] as const,
     byClientName: (clientName: string) =>
       [...queryKeys.keywords.lists(), "name", clientName] as const,
   },
@@ -54,6 +52,14 @@ export const queryKeys = {
   dashboard: {
     all: ["dashboard"] as const,
     stats: () => [...queryKeys.dashboard.all, "stats"] as const,
+  },
+
+  // Subreddits queries
+  subreddits: {
+    all: ["subreddits"] as const,
+    lists: () => [...queryKeys.subreddits.all, "list"] as const,
+    allSubreddits: () => [...queryKeys.subreddits.lists(), "all"] as const,
+    byClient: (clientId: string) => [...queryKeys.subreddits.lists(), "client", clientId] as const,
   },
 } as const;
 
